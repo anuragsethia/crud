@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body>
+	<h1 align = "center">WELCOME STUDENTS</h1>
+		
+		<table style="width:100%" class = "table">
+			  <tr>
+			    <th>ID</th>
+			    <th>Student Name</th>
+			    <th>Physics Marks</th>
+			    <th>Chemistry Marks</th>
+			    <th>Maths Marks</th>
+			  </tr>
+			  <tr th:each = "student:${students}">
+			    <td th:text = "${student.id}"></td>
+			    <td th:text = "${student.name}"></td>
+			    <td th:text = "${student.physics}"></td>
+			    <td th:text = "${student.chemistry}"></td>
+			    <td th:text = "${student.maths}"></td>
+			  </tr>
+		</table>
+</body>
+</html>
