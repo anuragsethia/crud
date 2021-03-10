@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class StudentController {
 	@Autowired
 	StudentRepository repo;
+	@Autowired
+	userDataRepository userrepo;
 	
 	@GetMapping("/allstudents")
 	public String ViewHomePage(Model model) {
@@ -23,7 +26,6 @@ public class StudentController {
 		students = repo.findAll();
 		System.out.println(students);
 		model.addAttribute("students", students);
-//		model.addAttribute("students",students);
 		return "home.html";
 	}
 	
@@ -32,9 +34,26 @@ public class StudentController {
 		return "login";
 	}
 	
-	@GetMapping("/login/{id}")
+	@RequestMapping("/getStudent")
 	@ResponseBody
-	public Optional<Student> getStudent(@RequestParam("sid_student") int id) {
-		return repo.findById(id);
+	public String getStudent(@RequestParam("id") int id,@RequestParam("password") String password,Model model) {
+		user_data user = userrepo.findById(id).orElse(new user_data());
+		String des = user.getDesignation();
+		System.out.println(user);
+		System.out.println(des);
+		if(des.equals("student")) {
+			Student student;
+			student = repo.findById(id).orElse(new Student());
+			System.out.println("Inner Loop : " + repo.findById(id));	
+			model.addAttribute("students", student);
+			
+			return "home.html";
+			
+		}else {
+			return "home.html";
+		}
+//		return "home.html";
 	}
+	
 }
+
