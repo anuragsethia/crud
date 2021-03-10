@@ -8,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 public class StudentController {
@@ -24,9 +27,9 @@ public class StudentController {
 	public String ViewHomePage(Model model) {
 		List<Student> students = new ArrayList<>();
 		students = repo.findAll();
-		System.out.println(students);
+//		System.out.println(students);
 		model.addAttribute("students", students);
-		return "home.html";
+		return "home";
 	}
 	
 	@GetMapping("/")
@@ -35,24 +38,44 @@ public class StudentController {
 	}
 	
 	@RequestMapping("/getStudent")
-	@ResponseBody
 	public String getStudent(@RequestParam("id") int id,@RequestParam("password") String password,Model model) {
 		user_data user = userrepo.findById(id).orElse(new user_data());
-		String des = user.getDesignation();
 		System.out.println(user);
-		System.out.println(des);
-		if(des.equals("student")) {
-			Student student;
-			student = repo.findById(id).orElse(new Student());
-			System.out.println("Inner Loop : " + repo.findById(id));	
+		if(user.getDesignation().equals("student")) {
+			Student student = repo.findById(id).orElse(new Student());
+			System.out.println(student);
 			model.addAttribute("students", student);
-			
-			return "home.html";
-			
+			return "home";
 		}else {
-			return "home.html";
+			List<Student> students = new ArrayList<>();
+			students = repo.findAll();
+//			System.out.println(students);
+			model.addAttribute("students", students);
+			
+			return "teacher";
 		}
-//		return "home.html";
+		
+	}
+	
+	@PostMapping("/save")
+	public String saveDetail(@ModelAttribute("student") Student student,Model model) {
+		repo.save(student);
+		model.addAttribute("students",repo.findAll());
+		return "teacher";
+	}
+	
+	@RequestMapping("/edit/{id}")
+	public String editStudent(@PathVariable(name = "id",required = false) int id,Model model) {
+		Optional<Student> student = repo.findById(id);
+		model.addAttribute("student",student);
+		return "editDetail";
+	}
+	
+	@RequestMapping("/delete/{id}")
+	public String deleteStudent(@PathVariable("id") int id,Model model) {
+		repo.deleteById(id);
+		model.addAttribute("students",repo.findAll());
+		return "teacher";
 	}
 	
 }
