@@ -41,21 +41,42 @@ public class StudentController {
 	public String getStudent(@RequestParam("id") int id,@RequestParam("password") String password,Model model) {
 		user_data user = userrepo.findById(id).orElse(new user_data());
 		System.out.println(user);
-		if(user.getDesignation().equals("student")) {
-			Student student = repo.findById(id).orElse(new Student());
-			System.out.println(student);
-			model.addAttribute("students", student);
-			return "home";
+		String pass = user.getPassword();
+		if(pass.equals(password)) {
+			if(user.getDesignation().equals("student")) {
+				Student student = repo.findById(id).orElse(new Student());
+				System.out.println(student);
+				model.addAttribute("students", student);
+				return "home";
+			}else {
+				List<Student> students = new ArrayList<>();
+				students = repo.findAll();
+//				System.out.println(students);
+				model.addAttribute("students", students);
+				
+				return "teacher";
+			}
 		}else {
-			List<Student> students = new ArrayList<>();
-			students = repo.findAll();
-//			System.out.println(students);
-			model.addAttribute("students", students);
-			
-			return "teacher";
+			return "login";
 		}
 		
+		
 	}
+	
+	@RequestMapping("/signupstudent")
+	public String signupStudentDirect(Model model) {
+		user_data user = new user_data();
+		model.addAttribute("user", user);
+		return "signup";
+	}
+	
+	@PostMapping("/signup")
+	public String signupStudent(@ModelAttribute("user") user_data user,Model model) {
+		userrepo.save(user);
+//		model.addAttribute("students",repo.findAll());
+		return "login";
+	}	
+	
 	
 	@PostMapping("/save")
 	public String saveDetail(@ModelAttribute("student") Student student,Model model) {

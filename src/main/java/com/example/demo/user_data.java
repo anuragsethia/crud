@@ -8,9 +8,9 @@ import javax.persistence.Id;
 public class user_data {
 	
 	@Id
-	
 	private int id;
 	private String password;
+	private String name;
 	private String designation;
 	public int getId() {
 		return id;
@@ -30,10 +30,19 @@ public class user_data {
 	public void setDesignation(String designation) {
 		this.designation = designation;
 	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	@Override
 	public String toString() {
-		return "user_data [id=" + id + ", password=" + password + ", designation=" + designation + "]";
+		return "user_data [id=" + id + ", password=" + password + ", name=" + name + ", designation=" + designation
+				+ "]";
 	}
+	
 	
 	
 	
